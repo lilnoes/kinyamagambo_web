@@ -1,14 +1,18 @@
 import { useState } from "react";
 import Header from "../components/Header";
+import {fetcher, sendPost} from "../lib/fetch";
 export default function Register() {
     const [state, setState] = useState({});
     const handleChange = (e) => setState({ ...state, [e.target.name]: e.target.value });
-    const handleSubmit = (e) =>{
+    const handleSubmit = async (e) =>{
         e.preventDefault();
         if(state.password != state.confpassword){
             setState({...state, passwordError: "Passwords do not match"})
             return;
         }
+        const data = await sendPost("/api/user/new", state);
+        console.log("data", data);
+
         // return
     }
     return (<div>
