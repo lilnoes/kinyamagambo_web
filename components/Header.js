@@ -16,8 +16,8 @@ export default function Header(props) {
 
                 {(!user || user && user.data == null) &&
                     <>
-                        <button><Link href="login">Login</Link></button>
-                        <button className="ml-5"><Link href="register">Register</Link></button>
+                        <button><Link href="/login">Login</Link></button>
+                        <button className="ml-5"><Link href="/register">Register</Link></button>
                     </>}
                 {user && user.data != null &&
                     <>

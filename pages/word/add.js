@@ -1,5 +1,6 @@
 import Header from "../../components/Header";
 import { useState } from "react";
+import { sendPost } from "../../lib/fetch";
 
 export default function Home(props) {
     const [meanings, setMeanings] = useState([]);
@@ -11,9 +12,31 @@ export default function Home(props) {
     const addMeaning = () => {
         setMeanings(meanings.concat({ key: Math.random() }))
     };
-    const handleSubmit = () => {
-        const word = document.querySelector("input[name='word']");
-        const isesengura = document.querySelector("input[name='isesengura']");
+    const handleSubmit = async () => {
+        const word = document.querySelector("input[name='word']").value;
+        const isesengura = document.querySelector("input[name='isesengura']").value;
+        const meanings = [];
+        for(let _meaning of document.querySelectorAll(".meaning")){
+            const meaning = {};
+            for(let _input of _meaning.querySelectorAll(".meaning1 input"))
+                meaning[_input.name] = _input.value;
+            meaning["translations"] = {};
+            for(let _input of _meaning.querySelectorAll(".translations input"))
+                meaning["translations"][_input.name] = _input.value;
+            meaning["examples"] = [];
+            for(let exampleDiv of _meaning.querySelectorAll(".example")){
+                const example = exampleDiv.querySelector("input[name='example']").value;
+                const translations = {};
+
+                for(let _input of exampleDiv.querySelectorAll(".translations input"))
+                    translations[_input.name] = _input.value;
+                meaning["examples"].push({example, translations});
+            }
+            meanings.push(meaning);
+        }
+        const data = {word, isesengura, meanings};
+        const res = await sendPost("/api/word/save", {word: data});
+        console.log(res);
     }
     return (<div className="bg-wheat">
         <Header title="New Word" />
@@ -33,7 +56,7 @@ export default function Home(props) {
             {meanings.map((meaning, index) => <Meaning key={meaning.key} index={index} onDelete={deleteMeaning} />)}
         </div>
         <button onClick={addMeaning}>Add Meaning</button>
-        <button onClick={addMeaning} className="text-green-800 bg-white rounded-lg p-2 font-bold block">Save</button>
+        <button onClick={handleSubmit} className="text-green-800 bg-white rounded-lg p-2 font-bold block">Save</button>
 
     </div>);
 }
@@ -49,7 +72,7 @@ function Meaning(props) {
         setExamples(examples.concat({ key: Math.random() }))
     }
     return (<div className="meaning m-5 bg-white rounded-lg shadow-lg p-5">
-        <div className="meaning">
+        <div className="meaning1">
             {["meaning", "synonyms", "opposites", "related"].map((name) => <div>
                 <label>{name}: </label>
                 <input type="text" name={name} />
