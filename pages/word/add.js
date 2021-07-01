@@ -1,0 +1,92 @@
+import Header from "../../components/Header";
+import { useState } from "react";
+
+export default function Home(props) {
+    const [meanings, setMeanings] = useState([]);
+    const deleteMeaning = (index) => {
+        const _meanings = meanings.slice();
+        _meanings.splice(index, 1);
+        setMeanings(_meanings);
+    };
+    const addMeaning = () => {
+        setMeanings(meanings.concat({ key: Math.random() }))
+    };
+    const handleSubmit = () => {
+        const word = document.querySelector("input[name='word']");
+        const isesengura = document.querySelector("input[name='isesengura']");
+    }
+    return (<div className="bg-wheat">
+        <Header title="New Word" />
+        <h1 className="text-4xl text-green-600 font-bold">New word</h1>
+        <div>
+            <label>Word: </label>
+            <input type="text" name="word" />
+        </div>
+
+        <div>
+            <label>Isesengura: </label>
+            <input type="text" name="isesengura" />
+        </div>
+
+        <h2 className="text-3xl text-green-600 font-bold">Meanings</h2>
+        <div>
+            {meanings.map((meaning, index) => <Meaning key={meaning.key} index={index} onDelete={deleteMeaning} />)}
+        </div>
+        <button onClick={addMeaning}>Add Meaning</button>
+        <button onClick={addMeaning} className="text-green-800 bg-white rounded-lg p-2 font-bold block">Save</button>
+
+    </div>);
+}
+
+function Meaning(props) {
+    const [examples, setExamples] = useState([]);
+    const deleteExample = (index) => {
+        const _examples = examples.slice();
+        _examples.splice(index, 1);
+        setExamples(_examples);
+    };
+    const addExample = () => {
+        setExamples(examples.concat({ key: Math.random() }))
+    }
+    return (<div className="meaning m-5 bg-white rounded-lg shadow-lg p-5">
+        <div className="meaning">
+            {["meaning", "synonyms", "opposites", "related"].map((name) => <div>
+                <label>{name}: </label>
+                <input type="text" name={name} />
+            </div>)}
+        </div>
+        <div className="translations">
+            <h2>Translations</h2>
+            {["tr", "en", "fr", "sw"].map((name) => <div className="ml-5">
+                <label>Translation ({name})</label>
+                <input type="text" name={name} />
+            </div>)}
+        </div>
+
+        <h2 className="text-2xl text-green-600 font-bold mt-5">Examples</h2>
+        <div className="ml-5">
+            {examples.map((example, index) => <Example key={example.key} index={index} onDelete={deleteExample} />)}
+        </div>
+        <button onClick={addExample}>Add Example</button>
+
+        <button onClick={(e) => props.onDelete(props.index)}>Siba</button>
+    </div>);
+}
+
+function Example(props) {
+    return (<div className="example mb-5">
+        <div>
+            <label>Example: </label>
+            <input type="text" name="example" />
+        </div>
+        <div className="translations">
+            <h2>Translations</h2>
+            {["tr", "en", "fr", "sw"].map((name) => <div className="ml-5">
+                <label>Translation ({name})</label>
+                <input type="text" name={name} />
+            </div>)}
+        </div>
+        <button onClick={(e) => props.onDelete(props.index)}>Siba</button>
+        <hr className="" />
+    </div>);
+}
