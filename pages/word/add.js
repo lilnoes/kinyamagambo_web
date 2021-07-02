@@ -9,8 +9,16 @@ export default function Home(props) {
         _meanings.splice(index, 1);
         setMeanings(_meanings);
     };
-    const addMeaning = () => {
-        setMeanings(meanings.concat({ key: Math.random() }))
+    const addMeaning = async() => {
+        if(meanings.length != 0){
+            setMeanings(meanings.concat({key: Math.random(), examples: [], meaning: "", synonyms: "", opposites: "", related: "", translations: {tr: "", en: "", fr: "", sw: ""}}));
+            return;
+        }
+        const data = await sendPost("/api/word/kwiba/meaning", 0);
+        console.log(data);
+        let _meanings = data.data.meaning.definitions[0].meanings;
+        _meanings = _meanings.concat({key: Math.random(), examples: [], meaning: "", synonyms: "", opposites: "", related: "", translations: {tr: "", en: "", fr: "", sw: ""}});
+        setMeanings(_meanings);
     };
     const handleSubmit = async () => {
         const word = document.querySelector("input[name='word']").value;
@@ -53,7 +61,7 @@ export default function Home(props) {
 
         <h2 className="text-3xl text-green-600 font-bold">Meanings</h2>
         <div>
-            {meanings.map((meaning, index) => <Meaning key={meaning.key} index={index} onDelete={deleteMeaning} />)}
+            {meanings.map((meaning, index) => <Meaning meaning={meaning} key={meaning.key} index={index} onDelete={deleteMeaning} />)}
         </div>
         <button onClick={addMeaning}>Add Meaning</button>
         <button onClick={handleSubmit} className="text-green-800 bg-white rounded-lg p-2 font-bold block">Save</button>
@@ -62,33 +70,33 @@ export default function Home(props) {
 }
 
 function Meaning(props) {
-    const [examples, setExamples] = useState([]);
+    const [examples, setExamples] = useState(props.meaning.examples);
     const deleteExample = (index) => {
         const _examples = examples.slice();
         _examples.splice(index, 1);
         setExamples(_examples);
     };
     const addExample = () => {
-        setExamples(examples.concat({ key: Math.random() }))
+        setExamples(examples.concat({ key: Math.random(), example: "", translations: {tr: "", en: "", fr: "", sw: ""}}))
     }
     return (<div className="meaning m-5 bg-white rounded-lg shadow-lg p-5">
         <div className="meaning1">
             {["meaning", "synonyms", "opposites", "related"].map((name) => <div>
                 <label>{name}: </label>
-                <input type="text" name={name} />
+                <input type="text" name={name} value={props.meaning[name]}/>
             </div>)}
         </div>
         <div className="translations">
             <h2>Translations</h2>
             {["tr", "en", "fr", "sw"].map((name) => <div className="ml-5">
                 <label>Translation ({name})</label>
-                <input type="text" name={name} />
+                <input type="text" name={name} value={props.meaning.translations[name]}/>
             </div>)}
         </div>
 
         <h2 className="text-2xl text-green-600 font-bold mt-5">Examples</h2>
         <div className="ml-5">
-            {examples.map((example, index) => <Example key={example.key} index={index} onDelete={deleteExample} />)}
+            {examples.map((example, index) => <Example example={example} key={example.key} index={index} onDelete={deleteExample} />)}
         </div>
         <button onClick={addExample}>Add Example</button>
 
@@ -100,13 +108,13 @@ function Example(props) {
     return (<div className="example mb-5">
         <div>
             <label>Example: </label>
-            <input type="text" name="example" />
+            <input type="text" name="example" value={props.example.example}/>
         </div>
         <div className="translations">
             <h2>Translations</h2>
             {["tr", "en", "fr", "sw"].map((name) => <div className="ml-5">
                 <label>Translation ({name})</label>
-                <input type="text" name={name} />
+                <input type="text" name={name} value={props.example.translations[name]}/>
             </div>)}
         </div>
         <button onClick={(e) => props.onDelete(props.index)}>Siba</button>
