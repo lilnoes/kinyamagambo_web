@@ -11,8 +11,8 @@ const Example = {
     translations: {tr: "", en: "", fr: "", sw: ""},
 }
 
-const Person = {
-    userid: "",
+const Definition = {
+    userID: "",
     verified: false,
     meanings: [Meaning],
     examples: [Example],
@@ -23,7 +23,7 @@ const Person = {
 
 const Word = {
     word: "",
-    people: [Person],
+    definitions: [Definition],
     count: 0,
     isesengura: ""
 }

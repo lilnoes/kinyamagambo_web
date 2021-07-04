@@ -81,14 +81,14 @@ function Meaning(props) {
         <div className="meaning1">
             {["meaning", "synonyms", "opposites", "related"].map((name) => <div>
                 <label>{name}: </label>
-                <input type="text" name={name} value={props.meaning[name]} />
+                <input type="text" name={name} defaultValue={props.meaning[name]} />
             </div>)}
         </div>
         <div className="translations">
             <h2>Translations</h2>
             {["tr", "en", "fr", "sw"].map((name) => <div className="ml-5">
                 <label>Translation ({name})</label>
-                <input type="text" name={name} value={props.meaning.translations[name]} />
+                <input type="text" name={name} defaultValue={props.meaning.translations[name]} />
             </div>)}
         </div>
 
@@ -106,13 +106,13 @@ function Example(props) {
     return (<div className="example mb-5">
         <div>
             <label>Example: </label>
-            <input type="text" name="example" value={props.example.example} />
+            <input type="text" name="example" defaultValue={props.example.example} />
         </div>
         <div className="translations">
             <h2>Translations</h2>
             {["tr", "en", "fr", "sw"].map((name) => <div className="ml-5">
                 <label>Translation ({name})</label>
-                <input type="text" name={name} value={props.example.translations[name]} />
+                <input type="text" name={name} defaultValue={props.example.translations[name]} />
             </div>)}
         </div>
         <button onClick={(e) => props.onDelete(props.index)}>Siba</button>
