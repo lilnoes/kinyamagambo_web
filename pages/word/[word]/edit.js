@@ -4,11 +4,16 @@ import { sendPost } from "../../../lib/fetch";
 
 export default function Home(props) {
     const [meanings, setMeanings] = useState([]);
+    const [isesengura,setIsesengura] =useState("");
     useEffect(async () => {
-        const data = await sendPost(`/api/word/${props.word}/meaning`, 0);
-        console.log(data);
-        if (data.data.meaning.definitions.length > 0)
-            setMeanings(data.data.meaning.definitions[0].meanings);
+        const {data} = await sendPost(`/api/word/${props.word}/definition`, 0);
+        let word = data.word;
+        console.log("word", word);
+        if(word.definitions.length == 0) return;
+        let definition = word.definitions[0];
+        let _meanings = definition.meanings.map(meaning=>({...meaning, key: Math.random()}));
+        setIsesengura(definition.isesengura);
+        setMeanings(_meanings);
     }, []);
     const deleteMeaning = (index) => {
         const _meanings = meanings.slice();
@@ -20,7 +25,6 @@ export default function Home(props) {
     };
     const handleSubmit = async () => {
         const word = document.querySelector("input[name='word']").value;
-        const isesengura = document.querySelector("input[name='isesengura']").value;
         const meanings = [];
         for (let _meaning of document.querySelectorAll(".meaning")) {
             const meaning = {};
@@ -54,7 +58,7 @@ export default function Home(props) {
 
         <div>
             <label>Isesengura: </label>
-            <input type="text" name="isesengura" />
+            <input type="text" name="isesengura" value={isesengura} onChange={(e)=>setIsesengura(e.target.value)}/>
         </div>
 
         <h2 className="text-3xl text-green-600 font-bold">Meanings</h2>
@@ -68,7 +72,8 @@ export default function Home(props) {
 }
 
 function Meaning(props) {
-    const [examples, setExamples] = useState(props.meaning.examples);
+    let _examples = props.meaning.examples.map(example=>({...example, key: Math.random()}));
+    const [examples, setExamples] = useState(_examples);
     const deleteExample = (index) => {
         const _examples = examples.slice();
         _examples.splice(index, 1);
@@ -79,14 +84,14 @@ function Meaning(props) {
     }
     return (<div className="meaning m-5 bg-white rounded-lg shadow-lg p-5">
         <div className="meaning1">
-            {["meaning", "synonyms", "opposites", "related"].map((name) => <div>
+            {["meaning", "synonyms", "opposites", "related"].map((name, index) => <div key={index}>
                 <label>{name}: </label>
                 <input type="text" name={name} defaultValue={props.meaning[name]} />
             </div>)}
         </div>
         <div className="translations">
             <h2>Translations</h2>
-            {["tr", "en", "fr", "sw"].map((name) => <div className="ml-5">
+            {["tr", "en", "fr", "sw"].map((name, index) => <div key={index} className="ml-5">
                 <label>Translation ({name})</label>
                 <input type="text" name={name} defaultValue={props.meaning.translations[name]} />
             </div>)}
@@ -110,7 +115,7 @@ function Example(props) {
         </div>
         <div className="translations">
             <h2>Translations</h2>
-            {["tr", "en", "fr", "sw"].map((name) => <div className="ml-5">
+            {["tr", "en", "fr", "sw"].map((name, index) => <div key={index} className="ml-5">
                 <label>Translation ({name})</label>
                 <input type="text" name={name} defaultValue={props.example.translations[name]} />
             </div>)}
