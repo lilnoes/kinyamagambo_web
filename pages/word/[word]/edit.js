@@ -24,6 +24,7 @@ export default function Home(props) {
         setMeanings(meanings.concat({ key: Math.random(), examples: [], meaning: "", synonyms: "", opposites: "", related: "", translations: { tr: "", en: "", fr: "", sw: "" } }));
     };
     const handleSubmit = async () => {
+        const words = new Set();
         const word = document.querySelector("input[name='word']").value;
         const meanings = [];
         for (let _meaning of document.querySelectorAll(".meaning")) {
