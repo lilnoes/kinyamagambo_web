@@ -9,7 +9,7 @@ async function handler(req, res) {
     const db = await getDatabase();
     const collection = db.collection("words");
     const word = await collection.findOne({word: _word, "definitions.userID": new ObjectID(user._id)}, {
-        projection: {"definitions.$": 1}
+        projection: {"definitions.$": 1, isesengura: 1}
     });
     res.status(200).json({ status: 'done', data: {word: word}});
 }

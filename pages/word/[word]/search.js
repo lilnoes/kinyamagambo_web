@@ -5,14 +5,33 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 export default function Home(props) {
+    const results = [];
+    const search = props.search;
+    for(let word of props.words){
+        if(word.word.includes(search)) results.push(<p>{word.word}</p>);
+        for(let definition of word.definitions)
+            for(let meaning of definition.meanings){
+                ["meaning", "synonyms", "opposites", "related"].map((name)=>{
+                    if(meaning[name].includes(search)) results.push(<p>{meaning[name]}</p>);
+                });
+                ["tr", "en", "fr", "sw"].map((name)=>{
+                    if(meaning.translations[name].includes(search)) results.push(<p>{meaning.translations[name]}</p>);
+                });
+                for(let example of meaning.examples){
+                    if(example.example.includes(search)) results.push(<p>{example.example}</p>);
+                    ["tr", "en", "fr", "sw"].map((name)=>{
+                        if(example.translations[name].includes(search)) results.push(<p>{example.translations[name]}</p>);
+                    });
+                }
+            }
+    }
+    
     return (<div className="bg-wheat">
-        <Header title={`${props.word} - Search`} />
-        <h1 className="text-4xl text-green-600 font-bold">{props.word} - Search results</h1>
+        <Header title={`${props.search} - Search`} />
+        <h1 className="text-4xl text-green-600 font-bold">{props.search} - Search results</h1>
 
         <div>
-            {props.words.map((word, index) => <div key={word._id}>
-                <h2 className="text-3xl text-green-600 font-bold"><Link href={`/word/${word.word}`}>{word.word}</Link></h2>
-            </div>)}
+            {results}
         </div>
 
     </div>);
@@ -24,14 +43,10 @@ export const getServerSideProps = async (context) => {
     const {word} = params;
     const db = await getDatabase();
     const collection = await db.collection("words");
-    const words = collection.aggregate([
-        { $match: { $text: { $search: word } } },
-        { $project: { word: 1} },
-        { $sort: { score: { $meta: "textScore" } } }
-    ]);
-    console.log("words", await words.toArray());
+    const words = await (collection.find({$text: {$search: word}})).toArray();
+    // console.log("words", words);
     return {
-        props: { word: params.word, words: JSON.parse(JSON.stringify(await words.toArray()))}
+        props: { search: params.word, words: JSON.parse(JSON.stringify(words))}
     }
 }
 

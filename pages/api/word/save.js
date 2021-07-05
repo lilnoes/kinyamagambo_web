@@ -3,7 +3,8 @@ import getDatabase from "../../../lib/database.js";
 import { ObjectID } from "mongodb";
 
 async function handler(req, res) {
-    const { word: definition } = req.body;
+    const { definition } = req.body;
+    // console.log(definition.meani);
     const user = await req.session.get("user");
     definition["_id"] = new ObjectID();
     definition["userID"] = new ObjectID(user._id);
@@ -21,7 +22,7 @@ async function handler(req, res) {
         count: 1,
         isesengura: definition.isesengura
     });
-    const res1 = await collection.updateOne({ word: definition.word, "definitions.userID": definition.userID}, {
+    let res1 = await collection.updateOne({ word: definition.word, "definitions.userID": definition.userID}, {
         $set: {
             "definitions.$.meanings": definition.meanings,
             "definitions.$.isesengura": definition.isesengura,
@@ -29,7 +30,7 @@ async function handler(req, res) {
         $currentDate: {"definitions.$.date": true}
     });
     if (res1.result.nModified == 0) {
-        var res2 = await collection.updateOne({ word: definition.word }, {
+         res1 = await collection.updateOne({ word: definition.word }, {
             $push: {
                 "definitions": definition
             }

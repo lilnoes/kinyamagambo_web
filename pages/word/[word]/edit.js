@@ -12,7 +12,10 @@ export default function Home(props) {
         if(word.definitions.length == 0) return;
         let definition = word.definitions[0];
         let _meanings = definition.meanings.map(meaning=>({...meaning, key: Math.random()}));
-        setIsesengura(definition.isesengura);
+        if(definition.isesengura)
+            setIsesengura(definition.isesengura);
+            else 
+            setIsesengura(word.isesengura);
         setMeanings(_meanings);
     }, []);
     const deleteMeaning = (index) => {
@@ -32,8 +35,9 @@ export default function Home(props) {
             for (let _input of _meaning.querySelectorAll(".meaning1 input"))
                 meaning[_input.name] = _input.value;
             meaning["translations"] = {};
-            for (let _input of _meaning.querySelectorAll(".translations input"))
-                meaning["translations"][_input.name] = _input.value;
+            for (let _input of _meaning.querySelectorAll(".meaning2.translations input"))
+            meaning["translations"][_input.name] = _input.value;
+                // console.log(_input.name, _input.value);
             meaning["examples"] = [];
             for (let exampleDiv of _meaning.querySelectorAll(".example")) {
                 const example = exampleDiv.querySelector("input[name='example']").value;
@@ -46,8 +50,8 @@ export default function Home(props) {
             meanings.push(meaning);
         }
         const data = { word, isesengura, meanings };
-        const res = await sendPost("/api/word/save", { word: data });
-        console.log(res);
+        const res = await sendPost("/api/word/save", { definition: data });
+        console.log(data);
     }
     return (<div className="bg-wheat">
         <Header title="Word - edit" />
@@ -90,7 +94,7 @@ function Meaning(props) {
                 <input type="text" name={name} defaultValue={props.meaning[name]} />
             </div>)}
         </div>
-        <div className="translations">
+        <div className="meaning2 translations">
             <h2>Translations</h2>
             {["tr", "en", "fr", "sw"].map((name, index) => <div key={index} className="ml-5">
                 <label>Translation ({name})</label>
