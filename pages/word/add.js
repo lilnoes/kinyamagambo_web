@@ -11,7 +11,7 @@ export default function Home(props) {
         const { data } = await sendPost(`/api/word/${_word}/definition`, 0);
         let word = data.word;
         console.log("word", word);
-        if (word.definitions.length == 0) return;
+        if (word==null || word.definitions.length == 0) return [];
         let definition = word.definitions[0];
         let _meanings = definition.meanings.map(meaning => ({ ...meaning, key: Math.random() }));
         if (definition.isesengura)
@@ -61,7 +61,7 @@ export default function Home(props) {
         console.log(data);
     }
     return (<div className="bg-wheat">
-        <Header title="Word - edit" />
+        <Header title="Word - new" />
         <h1 className="text-4xl text-green-600 font-bold">New word</h1>
         <div>
             <label>Word: </label>
