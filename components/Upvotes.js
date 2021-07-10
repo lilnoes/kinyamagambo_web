@@ -31,7 +31,7 @@ export default function Upvotes(props) {
           </svg>
         </span>
       </span>
-      <span className="inline-block hover:cursor-pointer">
+      <span className="ml-12 inline-block hover:cursor-pointer">
         <span className="upvotes text-red-600 text-sm align-bottom mr-2">
           {downvotes}
         </span>
