@@ -4,6 +4,8 @@ import { ObjectID } from "mongodb";
 
 async function handler(req, res) {
     const { definition } = req.body;
+    if(definition.word.length <= 0)
+    return res.status(200).json({ status: 'error', data: "error" });
     // console.log(definition.meani);
     const user = await req.session.get("user");
     definition["_id"] = new ObjectID();

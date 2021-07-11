@@ -6,6 +6,15 @@ module.exports = {
     extend: {
       colors: {
         wheat: "wheat"
+      },
+      keyframes: {
+        wiggle: {
+          "0%": {opacity: 1},
+          "100%": {opacity: 0},
+        }
+      },
+      animation: {
+        wiggle: "wiggle 5s linear 3"
       }
     },
   },

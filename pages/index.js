@@ -51,6 +51,7 @@ function Definition(props) {
 
 function Word(props) {
   const word = props.word;
+  if(word.definitions.length == 0 || word.definitions[0].meanings.length == 0) return <div></div>;
   return (
     <div className="p-3 bg-white rounded-lg shadow-xl my-3">
       {word.definitions.map(definition => <Definition definition={definition} word={word.word} />)}
@@ -76,7 +77,7 @@ function Meaning(props) {
 function Example(props) {
   const example = props.example;
   return (
-    <div>
+    <div className="italic">
       <p><img className="w-3 inline-block mr-2" src="images/svg/hand-point-right.svg" /><span className="text-gray-800">{example.example}</span></p>
       <Translations translations={example.translations} />
     </div>

@@ -6,12 +6,13 @@ export default function Home(props) {
     const [meanings, setMeanings] = useState([]);
     const [isesengura, setIsesengura] = useState("");
     const [loaded, setLoaded] = useState(false);
+    const [msg, setMsg] = useState("");
     const fetchMeaning = async () => {
         const _word = document.querySelector("input[name='word']").value;
         const { data } = await sendPost(`/api/word/${_word}/definition`, 0);
         let word = data.word;
         console.log("word", word);
-        if (word==null || word.definitions.length == 0) return [];
+        if (word == null || word.definitions.length == 0) return [];
         let definition = word.definitions[0];
         let _meanings = definition.meanings.map(meaning => ({ ...meaning, key: Math.random() }));
         if (definition.isesengura)
@@ -34,6 +35,8 @@ export default function Home(props) {
         setMeanings(_meanings.concat({ key: Math.random(), examples: [], meaning: "", synonyms: "", opposites: "", related: "", translations: { tr: "", en: "", fr: "", sw: "" } }));
     };
     const handleSubmit = async () => {
+        document.getElementById("spinner").classList.remove("hidden");
+        document.getElementById("spinner").classList.add("inline-block");
         const words = new Set();
         const word = document.querySelector("input[name='word']").value;
         const meanings = [];
@@ -58,7 +61,12 @@ export default function Home(props) {
         }
         const data = { word, isesengura, meanings };
         const res = await sendPost("/api/word/save", { definition: data });
-        console.log(data);
+        document.getElementById("spinner").classList.remove("inline-block");
+        document.getElementById("spinner").classList.add("hidden");
+        document.getElementById("msg").classList.remove("opacity-0");
+        document.getElementById("msg").classList.add("opacity-100");
+        setMsg(res.data);
+        console.log(res);
     }
     return (<div className="bg-wheat">
         <Header title="Word - new" />
@@ -79,7 +87,11 @@ export default function Home(props) {
         </div>
         <button onClick={addMeaning}>Add Meaning</button>
         <button onClick={handleSubmit} className="text-green-800 bg-white rounded-lg p-2 font-bold block">Save</button>
-
+        <img id="spinner" className="w-10 hidden animate-spin" src="/images/svg/spinner.svg" />
+        <span id="msg" className="transition-opacity duration-[2000ms] opacity-0" onTransitionEnd={e => {
+            e.target.classList.remove("opacity-100");
+            e.target.classList.add("opacity-0");
+        }}>{msg}</span>
     </div>);
 }
 
