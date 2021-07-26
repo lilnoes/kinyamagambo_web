@@ -5,13 +5,11 @@ import {ObjectID} from "mongodb";
 
 async function handler(req, res) {
     const {word: _word} = req.query;
+    console.log("deleteing", _word);
     const user = await req.session.get("user");
     const db = await getDatabase();
-    const collection = db.collection("cleanedwords");
-    // return res.status(200).json({status: "redirected", url: "/login"});
-    const word = await collection.findOne({word: _word, "definitions.userID": new ObjectID(user._id)}, {
-        projection: {"definitions.$": 1, isesengura: 1}
-    });
+    const collection = db.collection("words");
+    const word = await collection.deleteOne({word: _word});
     res.status(200).json({ status: 'done', data: {word: word}});
 }
 

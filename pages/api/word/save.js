@@ -16,7 +16,7 @@ async function handler(req, res) {
     definition["upvotes"] = 0;
     definition["downvotes"] = 0;
     const db = await getDatabase();
-    const collection = db.collection("words");
+    const collection = db.collection("cleanedwords");
     const existingWord = await collection.findOne({ word: definition.word });
     if (!existingWord) await collection.insertOne({
         word: definition.word,

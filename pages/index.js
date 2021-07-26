@@ -1,16 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../components/Header.js";
 import Upvotes from "../components/Upvotes.js";
 import Translations from "../components/Translations.js";
 
 export default function Home(props) {
+  const [words, setWords] = useState(props.words);
+  const deleteWord = async (index)=>{
+    const data = await fetcher(`/api/word/${words[index].word}/delete`);
+    const _words = words.slice();
+    _words.splice(index, 1);
+    console.log(index, data, _words.length);
+    setWords(_words);
+  }
   return (
     <div className="bg-wheat">
       <Header title="Inyungururamagambo" />
       <div className="m-2">
-        <WordDay word={props.random} key={Math.random()} />
-        {props.words.map((word) => (
-          <Word word={word} key={Math.random()} />
+        <WordDay word={props.words[0]} key={Math.random()} />
+        {words.map((word, index) => (
+          <Word word={word} key={word.word} index={index} onDeleteWord={deleteWord}/>
         ))}
       </div>
     </div>
@@ -24,7 +32,9 @@ function WordDay(props) {
       <h1 className="text-[13px] relative bottom-[-8px] text-green-800 font-bold">
         Word of the day
       </h1>
-      {word.definitions.map(definition => <Definition definition={definition} word={word.word} />)}
+      <div>{word.word}</div>
+
+      {word.definitions && word.definitions.map(definition => <Definition definition={definition} word={word.word} />)}
     </div>
   );
 }
@@ -51,10 +61,11 @@ function Definition(props) {
 
 function Word(props) {
   const word = props.word;
-  if(word.definitions.length == 0 || word.definitions[0].meanings.length == 0) return <div></div>;
   return (
-    <div className="p-3 bg-white rounded-lg shadow-xl my-3">
-      {word.definitions.map(definition => <Definition definition={definition} word={word.word} />)}
+    <div className="p-3 bg-white rounded-lg shadow-xl my-3 relative">
+      <div>{word.word}</div>
+      <button onClick={()=>props.onDeleteWord(props.index)} className="bg-red-600 text-white p-1 rounded-lg absolute top-0 right-0">delete</button>
+      {word.definitions && word.definitions.map(definition => <Definition definition={definition} word={word.word} />)}
     </div>
   );
 }
@@ -85,26 +96,17 @@ function Example(props) {
 }
 
 import getDatabase from "../lib/database";
+import { fetcher } from "../lib/fetch.js";
 export const getServerSideProps = async (context) => {
   const db = await getDatabase();
-  const collection = db.collection("words");
-  const _random = collection.aggregate([
-    { $sample: { size: 1 } },
+  const collection = db.collection("cleanedwords");
+  const _words = collection.aggregate([
+    { $sample: { size: 100 } },
     { $project: { word: 1, definitions: { $slice: ["$definitions", 1] } } },
   ]);
-  const _words = collection.find(
-    {},
-    {
-      sort: { _id: -1 },
-      limit: 10,
-      projection: { word: 1, definitions: { $slice: ["$definitions", 1] } },
-    }
-  );
-  const random = await _random.toArray();
   const words = await _words.toArray();
   return {
     props: {
-      random: JSON.parse(JSON.stringify(random[0])),
       words: JSON.parse(JSON.stringify(words)),
     },
   };
