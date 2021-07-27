@@ -29,17 +29,17 @@ export default function Home(props) {
 
         <div>
             <label>synonyms: </label>
-            <input type="text" value={state.synonym} onChange={(e) => dispatch(["PROPERTY", { name: "synonyms", value: e.target.value }])}/>
+            <textarea value={state.synonym} onChange={(e) => dispatch(["PROPERTY", { name: "synonyms", value: e.target.value }])}/>
         </div>
 
         <div>
             <label>opposites: </label>
-            <input type="text" value={state.opposites} onChange={(e) => dispatch(["PROPERTY", { name: "opposites", value: e.target.value }])}/>
+            <textarea value={state.opposites} onChange={(e) => dispatch(["PROPERTY", { name: "opposites", value: e.target.value }])}/>
         </div>
 
         <div>
             <label>related: </label>
-            <input type="text" value={state.related} onChange={(e) => dispatch(["PROPERTY", { name: "related", value: e.target.value }])}/>
+            <textarea value={state.related} onChange={(e) => dispatch(["PROPERTY", { name: "related", value: e.target.value }])}/>
         </div>
 
         <div className="translations">
@@ -50,18 +50,12 @@ export default function Home(props) {
             </div>)}
         </div>
 
-        <div className="m-5 border-2 border-red-700 p-10">
-            <h2 className="text-green-700 font-bold">Sentences</h2>
-            {sentences.map(sentence => <p key={sentence._id}>{sentence.sentence}</p>)}
-            <button onClick={props.fetchSentences}>Get sentences</button>
-        </div>
-
         <h2 className="text-3xl text-green-600 font-bold">Meanings</h2>
         <div>
-            {state.meanings.map((meaning, index) => <Meaning meaning={meaning} key={meaning.key} index={index} dispatch={props.dispatch} />)}
+            {state.meanings.map((meaning, index) => <Meaning meaning={meaning} key={meaning.key} index={index} dispatch={props.dispatch} sentences={sentences}/>)}
         </div>
         <button onClick={props.addMeaning}>Add Meaning</button>
-        {/* <button onClick={handleSubmit} className="text-green-800 bg-white rounded-lg p-2 font-bold block">Save</button> */}
+        <button onClick={props.handleSubmit} className="text-green-800 bg-white rounded-lg p-2 font-bold block">Save</button>
         <img id="spinner" className="w-10 hidden animate-spin" src="/images/svg/spinner.svg" />
         <span id="msg" className="transition-opacity duration-[2000ms] opacity-0" onTransitionEnd={e => {
             e.target.classList.remove("opacity-100");

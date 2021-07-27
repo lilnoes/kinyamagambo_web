@@ -1,9 +1,6 @@
 const Meaning = {
     meaning: "",
-    synonym: "",
-    opposite: "",
-    related: "",
-    translations: {tr: "", en: "", fr: "", sw: ""},
+    examples: [Example]
 }
 
 const Example = {
@@ -12,10 +9,16 @@ const Example = {
 }
 
 const Definition = {
+    word: "",
+    igicumbi: "",
+    ubwoko: "",
+    synonyms: "",
+    opposites: "",
+    related: "",
+    translations: {},
     userID: "",
     verified: false,
     meanings: [Meaning],
-    examples: [Example],
     upvotes: 0,
     downvotes: 0,
     date: new Date
@@ -25,5 +28,20 @@ const Word = {
     word: "",
     definitions: [Definition],
     count: 0,
-    isesengura: ""
 }
+
+//word index
+// db.cleanedwords.createIndex({word: 1}, {unique: true})
+// db.cleanedwords.createIndex({igicumbi: 1})
+// db.cleanedwords.createIndex({ubwoko: 1})
+// db.cleanedwords.createIndex({"$**": "text"}, {name: "textIndex", weights: {
+//     "word": 10,
+//     "translations.en": 10,
+//     "translations.tr": 10,
+//     "translations.fr": 10,
+//     "translations.sw": 10,
+//     "definitions.meanings.meaning": 5,
+// }})
+
+//search index
+

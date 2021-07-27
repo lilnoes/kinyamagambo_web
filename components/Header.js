@@ -14,8 +14,10 @@ export default function Header(props) {
     user = null;
     const title = props.title;
     const search = async () => {
-        const res = await sendPost(`/api/word/${word}`, 0);
-        console.log(res.data);
+        const { data } = await sendPost(`/api/word/${word}`, 0);
+        console.log(data);
+        if (data.word) router.push(`/word/${word}`);
+        else router.push(`/word/${word}/search`);
     }
     return (<div>
         <Head>
@@ -30,7 +32,7 @@ export default function Header(props) {
                 {user == null &&
                     <>
                         <div className="relative inline-block float-right mr-12">
-                            <img className="w-10 inline-block cursor-pointer relative top-2" src="/images/svg/user.svg" onClick={()=>setVisible(!visible)}/>
+                            <img className="w-10 inline-block cursor-pointer relative top-2" src="/images/svg/user.svg" onClick={() => setVisible(!visible)} />
                             {visible && <div className="absolute bg-white text-black p-2">
                                 <button className="block hover:text-gray-600"><Link href="/login">Login</Link></button>
                                 <button className="block hover:text-gray-600"><Link href="/register">Register</Link></button>

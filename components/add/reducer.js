@@ -3,6 +3,9 @@ export default function reducer(state, [action, payload]) {
     console.log("reducert", action, payload);
     console.log("prev state", state);
     switch (action) {
+        case "DEFINITION": {
+            return {...state, ...payload};
+        }
         case "PROPERTY": {
             state[payload.name] = payload.value; return {...state};
         }

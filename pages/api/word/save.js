@@ -20,14 +20,24 @@ async function handler(req, res) {
     const existingWord = await collection.findOne({ word: definition.word });
     if (!existingWord) await collection.insertOne({
         word: definition.word,
+        igicumbi: definition.igicumbi,
+        ubwoko: definition.ubwoko,
+        synonyms: definition.synonyms,
+        opposites: definition.opposites,
+        related: definition.related,
+        translations: definition.translations,
         definitions: [],
         count: 1,
-        isesengura: definition.isesengura
     });
     let res1 = await collection.updateOne({ word: definition.word, "definitions.userID": definition.userID}, {
         $set: {
+            "definitions.$.igicumbi": definition.igicumbi,
+            "definitions.$.ubwoko": definition.ubwoko,
+            "definitions.$.synonyms": definition.synonyms,
+            "definitions.$.opposites": definition.opposites,
+            "definitions.$.related": definition.related,
+            "definitions.$.translations": definition.translations,
             "definitions.$.meanings": definition.meanings,
-            "definitions.$.isesengura": definition.isesengura,
         },
         $currentDate: {"definitions.$.date": true}
     });

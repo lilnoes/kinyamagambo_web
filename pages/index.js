@@ -51,6 +51,7 @@ function Definition(props) {
     <h2 className="text-[10px] text-gray-700 mb-2">By <span className="text-[15px] font-bold mr-5">lilnoes</span>
       On May 21, 2020
     </h2>
+    <Translations translations={definition.translations} />
     {definition.meanings.map((meaning) => (
       <Meaning meaning={meaning} key={Math.random()} />
     ))}
@@ -75,7 +76,6 @@ function Meaning(props) {
   return (
     <div className="ml-5">
       <p><img className="w-4 inline-block mr-3" src="images/svg/arrow-circle-right.svg" /><span className="font-bold text-xl">{meaning.meaning}</span></p>
-      <Translations translations={meaning.translations} />
       <div className="ml-5">
         {meaning.examples.map((example) => (
         <Example example={example} key={Math.random()} />

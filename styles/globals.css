@@ -5,3 +5,6 @@
 input{
     @apply outline-none border-[1px];
 }
+.example label{
+        @apply bg-red-400;
+}

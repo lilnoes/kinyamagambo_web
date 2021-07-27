@@ -10,15 +10,17 @@ export default function Meaning(props) {
     return (<div className="meaning m-5 bg-white rounded-lg shadow-lg p-5">
         <div className="meaning">
             <label>meaning: </label>
-            <input type="text" name="meaning" defaultValue={meaning.meaning} onChange={(e)=>dispatch(["MEANINGWORD", {mIndex, value: e.target.value}])}/>
+            <input type="text" name="meaning" defaultValue={meaning.meaning} onChange={(e) => dispatch(["MEANINGWORD", { mIndex, value: e.target.value }])} />
         </div>
 
         <h2 className="text-2xl text-green-600 font-bold mt-5">Examples</h2>
-        <div className="ml-5">
-            {examples.map((example, index) => <Example example={example} key={example.key} index={index} mIndex={mIndex} dispatch={dispatch}/>)}
+        <div className="bg-wheat p-10">
+            {/* <div className="bg-white"> */}
+                {examples.map((example, index) => <Example example={example} key={example.key} index={index} mIndex={mIndex} dispatch={dispatch} sentences={props.sentences} />)}
+            {/* </div> */}
         </div>
-        <button onClick={()=>dispatch(["ADDEXAMPLE", {mIndex}])}>Add Example</button>
+        <button onClick={() => dispatch(["ADDEXAMPLE", { mIndex }])}>Add Example</button>
 
-        <button onClick={()=>dispatch(["DELETEMEANING", {mIndex}])}>Siba</button>
+        <button onClick={() => dispatch(["DELETEMEANING", { mIndex }])}>Siba</button>
     </div>);
 }
