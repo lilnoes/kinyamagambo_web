@@ -6,16 +6,17 @@ import * as reducers from "../../components/add/reducer";
 import * as add from "../../components/add/Home";
 
 export default function Home(props) {
-    const [state, dispatch] = useReducer(reducers.default, reducers.initState); 
+    const [state, dispatch] = useReducer(reducers.default, reducers.initState);
     const [sentences, setSentences] = useState([]);
     const [msg, setMsg] = useState("");
+    const [prevWord, setPrevWord] = useState("");
     const types = ["izina rusange", "izina bwite", "igisantera", "izina ntera", "ikinyazina", "indangahantu", "icyungo", "umugereka/ngera", "irangamutima", "inyigana", "ikegeranshinga", "akamamo", "inshinga iri mu mbundo", "inshinga idasanzwe", "inshinga itondaguye"];
 
-    const addMeaning = async () => {
-        if (state.meanings.length > 0) {
-            dispatch(["ADDMEANING", [{ meaning: "", examples: [], key: Math.random() }]]);
-            return;
-        }
+    const fetchMeaning = async () => {
+        if(state.word.length <= 1 || state.word == prevWord) return;
+        setPrevWord(state.word);
+        console.log("fetch new word");
+        // return;
         await fetchSentences();
         const { data } = await sendPost(`/api/word/${state.word}/definition`, 0);
         let word = data.word;
@@ -24,8 +25,6 @@ export default function Home(props) {
         dispatch(["DEFINITION", definition]);
         // let _meanings = definition?.meanings?.map(meaning => ({ ...meaning, key: Math.random() }));
         // dispatch(["ADDMEANING", _meanings]);
-        dispatch(["ADDMEANING", [{ meaning: "", examples: [], key: Math.random() }]]);
-        dispatch(["LOADED"]);
         return;
     }
 
@@ -47,8 +46,8 @@ export default function Home(props) {
         setMsg(res.data);
         console.log(res);
     }
-    return (<add.default sentences={sentences} dispatch={dispatch} state={state} types={types} fetchSentences={fetchSentences} addMeaning={addMeaning} msg={msg} handleSubmit={handleSubmit}/>);
-    
+    return (<add.default sentences={sentences} dispatch={dispatch} state={state} types={types} fetchSentences={fetchSentences} fetchMeaning={fetchMeaning} msg={msg} handleSubmit={handleSubmit} />);
+
 }
 // export const getServerSideProps = async (context) => {
 //     const { params, req, res } = context;

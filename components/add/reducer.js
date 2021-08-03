@@ -1,10 +1,13 @@
-export const initState = { word: "d", igicumbi: "", ubwoko: "", synonms: "", opposites: "", related: "", translations: {tr: "", en: "", fr: "", sw: ""}, meanings: [] };
+export const initState = { word: "", igicumbi: "", ubwoko: "", synonms: "", opposites: "", related: "", translations: {tr: "", en: "", fr: "", sw: ""}, meanings: [] };
 export default function reducer(state, [action, payload]) {
     console.log("reducert", action, payload);
     console.log("prev state", state);
     switch (action) {
         case "DEFINITION": {
+            if(payload)
             return {...state, ...payload};
+            initState.word = state.word;
+            return initState;
         }
         case "PROPERTY": {
             state[payload.name] = payload.value; return {...state};
